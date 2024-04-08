@@ -1,0 +1,43 @@
+<?xml version="1.0" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <service id="dsy.formtypes.datepicker.type" class="dsarhoya\FormTypesBundle\Form\Type\DatePickerType" public="true" autowire="true" autoconfigure="true">
+            <tag name="form.type" alias="dsy_formtypes_datepicker_type" />
+        </service>
+
+        <service id="dsy.formtypes.datetimepicker.type" class="dsarhoya\FormTypesBundle\Form\Type\DatetimePickerType" public="true" autowire="true" autoconfigure="true">
+            <tag name="form.type" alias="dsy_formtypes_datetimepicker_type" />
+        </service>
+
+        <service id="dsy.formtypes.star_rating.type" class="dsarhoya\FormTypesBundle\Form\Type\StarRatingType" public="true" autowire="true" autoconfigure="true">
+            <tag name="form.type" alias="dsy_formtypes_star_rating_type" />
+        </service>
+
+        <service id="dsy.formtypes.dropzone.type" class="dsarhoya\FormTypesBundle\Form\Type\DropzoneType" public="true" autowire="true" autoconfigure="true">
+            <tag name="form.type" alias="dsy_formtypes_dropzone_type" />
+        </service>
+
+        <service id="dsy.formtypes.save_buttom.type" class="dsarhoya\FormTypesBundle\Form\Type\SaveButtonType" public="true" autowire="true" autoconfigure="true">
+            <tag name="form.type" alias="dsy_formtypes_save_button_type" />
+        </service>
+
+        <service id="dsy.formtypes.link.type" class="dsarhoya\FormTypesBundle\Form\Type\LinkType" public="true" autowire="true" autoconfigure="true">
+            <tag name="form.type" alias="dsy_formtypes_link_type" />
+        </service>
+
+        <service id="dsy.formtypes.cancel.type" class="dsarhoya\FormTypesBundle\Form\Type\CancelType" public="true" autowire="true" autoconfigure="true">
+            <tag name="form.type" alias="dsy_formtypes_cancel_type" />
+        </service>
+
+        <service id="dsy.formtypes.buttons_groups.type" class="dsarhoya\FormTypesBundle\Form\Type\ButtonsGroupsType" public="true" autowire="true" autoconfigure="true">
+            <tag name="form.type" alias="dsy_formtypes_buttons_groups_type" />
+        </service>
+
+        <service id="dsy.formtypes.switch.type" class="dsarhoya\FormTypesBundle\Form\Type\SwitchType" public="true" autowire="true" autoconfigure="true">
+            <tag name="form.type" alias="dsy_formtypes_switch_type" />
+        </service>
+    </services>
+</container>

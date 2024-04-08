@@ -1,0 +1,18 @@
+{
+  "name": "form-types-bundle",
+  "version": "1.0.0",
+  "description": "FormTypesBundle",
+  "main": "index.js",
+  "repository": "git@bitbucket.org:dsarhoya/form-types-bundle.git",
+  "author": "Yosip Curiel <yosip.curiel@dsarhoya.cl>",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "bootstrap-datepicker": "^1.9.0",
+    "bootstrap-star-rating": "^4.0.6",
+    "dropzone": "^5.5.1",
+    "jquery": "^3.4.1",
+    "jquery-datetimepicker": "^2.5.21",
+    "moment": "^2.24.0"
+  }
+}

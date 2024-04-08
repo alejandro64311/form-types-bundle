@@ -1,0 +1,37 @@
+{
+    "name": "dsarhoya/form-types-bundle",
+    "description": "Dsarhoya FormTypesBundle",
+    "type": "symfony-bundle",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Yosip Curiel",
+            "email": "yosip.curiel@dsarhoya.cl"
+        }
+    ],
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://packages.dsy.cl"
+        }
+    ],
+    "require": {
+        "php": "^7.1.3",
+        "eddturtle/direct-upload": "^1.6|^1.5|^1.4"
+    },
+    "require-dev": {
+        "psr/container": "^1.0",
+        "twig/twig": "~1.12|~2.0",
+        "symfony/symfony": "^3.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "dsarhoya\\FormTypesBundle\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "dsarhoya\\FormTypesBundle\\Tests\\": "tests/"
+        }
+    }
+}

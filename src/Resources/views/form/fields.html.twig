@@ -1,0 +1,292 @@
+{# Star Rating widget #}
+{% block start_rating_widget %}
+    {% apply spaceless %}
+    <div class="widget-star-rating" style="font-size: 15px;">
+        {%- set attr = attr|merge({class: (attr.class|default('') ~ ' form-control rating rating-loading')|trim}) -%}
+        {% if showTooltip %}
+            {% set tooltipDetailHTML = "Performance: " ~ performance | number_format(1) ~ "\n"
+                                    ~ "Efficiency: " ~ efficiency | number_format(1) ~ "\n"
+                                    ~ "Knowledge: " ~ knowledge | number_format(1) ~ "\n"
+                                    ~ "Platform usage: " ~ platformUsage | number_format(1) %}
+            <a href="javascript:void(0);" class="link" 
+                data-toggle="popover"
+                data-placement="top"
+                data-html="1"
+                data-container="body"
+                data-trigger="hover"
+                data-title="Detail Rating"
+                data-content="{{ tooltipDetailHTML | nl2br }}">
+                    <i class="fa fa-info-circle fa-lg" aria-hidden="true" style="color: #AAA; "></i>
+            </a>
+        {% endif %}
+        <input type="hidden" {{ block('widget_attributes') }} {% if value is not empty %}value="{{ value }}" {% endif %}>
+    </div>
+    {% endapply %}
+{% endblock %}
+{# End Star Rating widget #}
+
+{# DatePicker widget #}
+{% block date_picker_widget -%}
+    {%- set attr = attr|merge({class: (attr.class|default('') ~ ' form-control datepicker')|trim}) -%}
+    <div class='input-group date'>
+        <input type="text" {{ block('widget_attributes') }} {% if value is not empty %}value="{{ value }}" {% endif %} autocomplete="off"/>
+        <span class="input-group-btn input-group-append">
+            <button type="button" class="btn btn-default btn-secondary js-btn-date-reset">
+                <i class="fa fa-times" aria-hidden="true"></i>
+            </button>
+            <button type="button" class="btn btn-primary js-btn-datepicker-show">
+                <i class="fa fa-calendar" aria-hidden="true"></i>
+            </button>
+        </span>
+    </div>
+{%- endblock date_picker_widget %}
+{# End DatePicker widget #}
+
+{# DateTimePicker widget #}
+{% block datetime_picker_widget -%}
+    {%- set attr = attr|merge({class: (attr.class|default('') ~ ' form-control datetimepicker')|trim}) -%}
+    <div class='input-group date'>
+        <input type="text" {{ block('widget_attributes') }} {% if value is not empty %}value="{{ value }}" {% endif %} autocomplete="off"/>
+        <span class="input-group-btn input-group-append">
+            <button type="button" class="add-on btn btn-default btn-secondary js-btn-datetimepicker-reset">
+                <i class="fa fa-times" aria-hidden="true"></i>
+            </button>
+            <button type="button" class="add-on btn btn-primary js-btn-datetimepicker-show">
+                <i class="fa fa-calendar" aria-hidden="true"></i>
+            </button>
+        </span>
+    </div>
+{%- endblock datetime_picker_widget %}
+{# End DateTimePicker widget #}
+
+{# Dropzone widget #}
+{% block dropzone_widget -%}
+    <{{ element|default('div') }} id="{{ form.vars.id ~ '_dz' }}" class="dropzone-group dropzone">
+        <div class="fallback">
+            {%- set type = type|default('file') -%}
+            {%- set id = id ~ '_file' -%}
+            {%- set full_name = full_name ~ '_file' -%}
+            {{- block('form_widget_simple') -}}
+        </div>
+    </{{ element|default('div') }}>
+    <input type="hidden" id="{{ form.vars.id }}" name="{{ form.vars.full_name }}" {% if form.vars.value != '' %}value="{{ form.vars.value }}"{% endif %} />
+
+    <script type="text/javascript">
+        (function (factory) {
+            'use strict';
+            if (typeof define === 'function' && define.amd) {
+                // AMD is used - Register as an anonymous module.
+                define(['jquery'], factory);
+            } else if (typeof exports === 'object') {
+                module.exports = factory(require('jquery'));
+            } else {
+                // Neither AMD nor CommonJS used. Use global variables.
+                if ('undefined' === typeof jQuery) {
+                    throw 'requires jQuery to be loaded first';
+                }
+                factory(jQuery);
+            }
+        }(function ($) {
+            'use strict';
+
+            $(function() {
+                var $inputFile = $('#{{ form.vars.id }}_file');
+                var $hiddenFile = $('#{{ form.vars.id }}');
+                var uploadUrl = $inputFile.data('upload-url');
+                var credentailsUrl = $inputFile.data('credentials-url');
+                var successUrl = $inputFile.data('success-url');
+                var deleteUrl = $inputFile.data('delete-url');
+                var dictRemoveFile = $inputFile.data('dict-remove-file');
+                var dictDefaultMessage = $inputFile.data('dict-default-message');
+                var dictCancelUpload = $inputFile.data('dict-cancel-upload');
+                var dictFileTooBig = $inputFile.data('dict-file-too-big');
+                var dictInvalidFileType = $inputFile.data('dict-invalid-file-type');
+                var dictMaxFilesExceeded = $inputFile.data('dict-max-files-exceeded');
+                var acceptedFiles = $inputFile.data('accepted-files');
+                var maxFiles = $inputFile.data('max-files');
+                var maxFilesize = $inputFile.data('max-filesize');
+                var preloadImages = $inputFile.data('preload-images');
+                var resizeWidth = $inputFile.data('resize-width');
+                var resizeQuality = $inputFile.data('resize-quality');
+                var timeout = $inputFile.data('timeout');
+
+                var options = {
+                    url: uploadUrl,
+                    uploadMultiple: false,
+                    acceptedFiles: acceptedFiles,
+                    maxFilesize: maxFilesize, // MB
+                    maxFiles: maxFiles,
+                    addRemoveLinks: deleteUrl ? true : false,
+                    resizeWidth: resizeWidth ? resizeWidth : null,
+                    resizeQuality: resizeQuality ? resizeQuality : 0.8, // 0.8 Default
+                    timeout: timeout ? timeout : 30000, // Milliseconds
+                    renameFile: function (file) {
+                        return 'file_' + (new Date().getTime()) + '.' + file.name.split('.').pop();
+                    },
+                    accept: function (file, done) {
+                        //console.log('accept');
+                        $.post(credentailsUrl, {
+                            filetype: file.type
+                        })
+                        .done(function (credentials) {
+                            //console.log('credentailsUrl Done');
+                            file.credentials = credentials.inputs;
+                            // file.previewElement.addEventListener("click", function(event) {
+                            //     window.open(file.url + file.approved_destination + file.upload.filename, '_blank');
+                            // });
+                            done();
+                        })
+                        .fail(function (error) {
+                            //console.log(error);
+                            done('Error get credentials');
+                        });
+                    },
+                    init: function () {
+                        //console.log('init');
+                        this.on('addedfile', function(file) {
+                            //console.log('addedfile');
+                            if(file.fileUrl){
+                                file.previewElement.addEventListener("click", function(event) {
+                                    window.open(file.fileUrl, '_blank');
+                                });
+                            }
+                        });
+                        this.on('sending', function (file, xhr, formData) {
+                            //console.log('sending');
+                            $.each(file.credentials, function (k, v) {
+                                formData.append(k, v);
+                            });
+                        });
+                        this.on("success", function (file, response) {
+                            //console.log('success');
+                            var filename = file.credentials.key.replace('${filename}', file.upload.filename);
+                            $hiddenFile.val(filename);
+                            if (successUrl) {
+                                $.post(successUrl, {
+                                    key: filename
+                                })
+                                .done(function (id) {
+                                    if (!Number.isNaN(id)) {
+                                        file.id = id;
+                                    }
+                                });
+                            }
+                        });
+                        this.on("error", function(file, message) { 
+                                alert(message);
+                                this.removeFile(file);
+                            });
+                        this.on('removedfile', function (file) {
+                            //console.log('removedfile');
+                            if (!file.accepted) {
+                                return;
+                            }
+                            $hiddenFile.val('');
+                            if (deleteUrl) {
+                                if (file.id !== undefined) {
+                                    $.get(deleteUrl.replace('__entity_id__', file.id));
+                                } else {
+                                    var filename = undefined !== file.upload ? file.upload.filename : file.name;
+                                    $.post(deleteUrl, { key: filename });
+                                }
+                            }
+                        });
+                        var elementDZ = this.element;
+                        var addThumbnail = function (elementDZ, mockFile) {
+                            elementDZ.dropzone.files.push(mockFile);
+                            elementDZ.dropzone.emit("addedfile", mockFile);
+                            elementDZ.dropzone.emit("thumbnail", mockFile, mockFile.thumbnailUrl);
+                            elementDZ.dropzone.emit("complete", mockFile);
+                        }
+        
+                        if (preloadImages) {
+                            if (Array.isArray(preloadImages)) {
+                                preloadImages.map(function (mockFile) {
+                                    addThumbnail(elementDZ, mockFile);
+                                });
+                            } else {
+                                addThumbnail(elementDZ, preloadImages);
+                            }
+                        }
+                    }
+                }
+
+                if (dictRemoveFile) {
+                    options.dictRemoveFile = dictRemoveFile;
+                }
+                if (dictDefaultMessage) {
+                    options.dictDefaultMessage = dictDefaultMessage;
+                }
+                if (dictCancelUpload) {
+                    options.dictCancelUpload = dictCancelUpload;
+                }
+                if (dictFileTooBig) {
+                    options.dictFileTooBig = dictFileTooBig;
+                }
+                if (dictInvalidFileType) {
+                    options.dictInvalidFileType = dictInvalidFileType;
+                }
+                if (dictMaxFilesExceeded) {
+                    options.dictMaxFilesExceeded = dictMaxFilesExceeded;
+                }
+                
+                // Dropzone.options['{{ (form.vars.id ~ "_dz")|camelize }}'] = options;
+                var myDz = new Dropzone('div#{{ (form.vars.id ~ "_dz") }}', options);
+            });
+        })
+    )
+    </script>
+{% endblock %}
+{# end Dropzone widget #}
+
+{# BUTTONS_GROUPS #}
+{% block buttons_groups_row %}
+    {% apply spaceless %}
+        <div {% if joined %} class="btn-group" role="group" aria-label="action"{% endif %}>
+            {% for child_form in form.children %}
+                {{ form_widget(child_form) }}
+                {% if not joined %}&nbsp;{% endif %}
+            {% endfor %}
+        </div>
+    {% endapply %}
+{% endblock %}
+{# END BUTTONS_GROUPS #}
+
+{# LINK WIDGET #}
+{% block link_row %}
+    {% apply spaceless %}
+        {{ form_widget(form) }}
+    {% endapply %}
+{% endblock %}
+{% block link_widget %}
+    {% apply spaceless %}
+        {% set class = type ~ ( attr.class is defined ? ' ' ~ attr.class : '' ) %}
+        {% set attr = attr|merge({ 'href': url ?? '#', 'class': class }) %}
+        {% if 'btn' == type %}
+            {% set attr = attr|merge({ role: 'button' }) %}
+        {% endif %}
+        <a {{ block('attributes')}} >
+            {% if label is empty -%}
+                {% set label = name|humanize %}
+            {%- endif -%}
+
+            {%- if translation_domain is same as(false) -%}
+                {{- label -}}
+            {%- else -%}
+                {{- label|trans({}, translation_domain) -}}
+            {%- endif -%}
+        </a>
+    {% endapply %}
+{% endblock %}
+{# END LINK WIDGET #}
+
+{# SWITCH WIDGET #}
+{% block switch_widget %}
+    {% apply spaceless %}
+        <div class="switch">
+            <label>{{ first_label }}<input type="checkbox" {{ block('widget_attributes') }}{% if value is defined %} value="{{ value }}"{% endif %}{% if checked %} checked="checked"{% endif %} />
+            <span class="lever switch-col-{{ color }}"></span>{{ second_label }}</label>
+        </div>
+    {% endapply %}
+{% endblock %}
+{# END SWITCH WIDGET #}
